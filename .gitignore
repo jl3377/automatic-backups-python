@@ -1,0 +1,4 @@
+.vscode/*
+tmp/*
+logs/backups.log
+conf/config.py
