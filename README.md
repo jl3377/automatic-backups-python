@@ -1,6 +1,6 @@
 # Automatic Backups with Python
 
-## How to make and use config.py
+## How to make and use the config file.
 Yo need create a config.py into conf/ directory.
 
 ```
