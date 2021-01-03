@@ -1,6 +1,6 @@
 # Automatic Backups with Python
 
-## How to use config.php
+## How to make and use config.py
 Yo need create a config.py into conf/ directory.
 
 ```
