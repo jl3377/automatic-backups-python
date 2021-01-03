@@ -1,7 +1,8 @@
 # Automatic Backups with Python.
 
 ## How to make and use the config file.
-Yo need create a config.py into conf/ directory.
+You need create a config.py into conf/ directory.
+This script, can copy multiple directories and files into a selected ftp.
 
 ```
 {
