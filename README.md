@@ -22,3 +22,4 @@ This script, can copy multiple directories and files into a selected ftp.
 ```
 
 ## not much more to say
+## log file, how to use
