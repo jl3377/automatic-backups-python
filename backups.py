@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Del Módulo "ftplib" importamos la clase "FTP" 
+# Del Módulo "ftplib" importamos la clase "FTP" .
 import os
 import sys
 import json
@@ -27,12 +27,11 @@ class Backup( object ):
       # check files and directories that need backup
       if self.check_files_and_dirs():
         self.log("ficheros copiados")
-
-      # conexión al ftp      
-      if self.conectar() == True:    
-        # carga de ficheros
-        self.cargar_ficheros()    
-        #pass
+        # conexión al ftp      
+        if self.conectar() == True:    
+          # carga de ficheros
+          self.cargar_ficheros()    
+          #pass
 
   def config(self):
     """cargar ficheros de configuración """
