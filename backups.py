@@ -129,4 +129,3 @@ class Backup( object ):
 
 
 b = Backup("artegrafico.net")  
-# https://python.hotexamples.com/examples/ftplib/FTP/pwd/python-ftp-pwd-method-examples.html
