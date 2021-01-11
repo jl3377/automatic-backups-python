@@ -25,16 +25,17 @@ class Backup( object ):
       # declarar la variable self.ftp que usaremos en las funciones.
       self.ftp = FTP_TLS()
       # check files and directories that need backup
-      if self.check_files_and_dirs():
-        self.log("ficheros copiados")
+      if self.check_files_and_dirs():        
         # conexión al ftp      
         if self.conectar() == True:    
           # carga de ficheros
           self.cargar_ficheros()    
           #pass
+      
+        
 
   def config(self):
-    """cargar ficheros de configuración """
+    """ Reading configuration file """
 
     try:
       with open("./conf/config.py", "r") as conf:
@@ -58,44 +59,47 @@ class Backup( object ):
         files_to_process = ""
         for file in self.files_to_backup:
           files_to_process += str(file)      
-        self.log("Preparando ficheros: "+files_to_process)
+        self.log("Checking file: "+files_to_process)
 
       # preparing directories      
       if self.directories_to_backup != "":
         directories_to_process = ""      
         for directory in self.directories_to_backup:
           directories_to_process += str(directory)        
-        self.log("Preparando directorios: "+directories_to_process)  
+        self.log("Checking directory: "+directories_to_process)  
 
       # backup files and directories
       self.backup_file = str(datetime.now().strftime("%Y-%m-%d_%H_%M_%S"))+"_"+self.name+".tar.gz"                        
-      cmd = "tar -czf "+ "tmp/"+str(self.backup_file)+ " "+files_to_process+ " "+directories_to_process
-      subprocess.Popen(cmd, shell=True, close_fds=False)      
+      cmd = "tar -czf "+ "tmp/"+str(self.backup_file)+ " "+files_to_process+ " "+directories_to_process  
+      result = subprocess.Popen(cmd, shell=True, close_fds=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+      #res = result.communicate()
       
       return True
+    
+    self.log("ERROR: Cant preparing files and directories.")
     return False
   
   def conectar(self):
     """conexión al FTP"""
 
     try:
-      self.log("Conectando a ... " + self.data[self.name]["ftp"])
+      self.log("Connecting to ... " + self.data[self.name]["ftp"])
       self.ftp.connect(self.data[self.name]["ftp"])
       self.ftp.login(self.data[self.name]["user"], self.data[self.name]["passwd"])     
-      self.log("Conexión establecida.")
-      self.log("Comprobando datos de acceso ...")      
-      self.log("Usuario "+self.data[self.name]["user"]+" aceptado.")                 
+      self.log("Connection done.")
+      self.log("Checking user and password ...")      
+      self.log("User "+self.data[self.name]["user"]+" accepted.")                 
       return True
     except ftplib.error_perm as error:      
       self.log("ERROR:"+str(error))       
     except (socket.error,socket.gaierror) as error:
-      self.log("ERROR: no se pudo conectar al FTP "+self.data[self.name]["ftp"])    
+      self.log("ERROR: can't connect to FTP "+self.data[self.name]["ftp"])    
     except:      
-      self.log("ERROR: Error indeterminado")    
+      self.log("ERROR: Error not implemented.")    
     return False
   
   def cargar_ficheros(self):
-    """carga de ficheros al FTP """
+    """ send files to FTP """
 
     tmp_dir = self.data[self.name]["tmp_dir"]
     backups_dir = self.data[self.name]["backup_dir"]
@@ -103,18 +107,18 @@ class Backup( object ):
       with open(tmp_dir+self.backup_file, "rb") as file:       
         self.ftp.cwd(backups_dir)
         self.ftp.storbinary('STOR '+str(self.backup_file), file)
-        self.log("Cargando fichero ..."+self.backup_file)    
+        self.log("Sending file ..."+self.backup_file)    
         #self.ftp.storlines('STOR '+str(self.backup_file), file)
-        self.log("Cerrando la conexión con el FTP.")    
+        self.log("Closing connection.")    
         self.ftp.close()
 
         #remove file from tmp directory
         os.remove(tmp_dir+self.backup_file)
     except:
-      self.log("ERROR: No se pudieron cargar los ficheros.")        
+      self.log("ERROR: Can't send files to FTP.")        
       
   def log(self, msg):
-    """escribir mensajes en fichero de log"""
+    """ write messages into log file """
 
     self.fecha = "["+str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))+"]"
     with open(self.data[self.name]["log_dir"], "a+") as file:
